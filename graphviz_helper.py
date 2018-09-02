@@ -74,7 +74,6 @@ def render_graph(structures, variables):
         print("Graphviz also needs to be installed on the host: brew install graphviz")
 
     g = Digraph('G')
-    g.attr(center='true')
 
     # print(structures)
     for pairs in structures:
@@ -83,13 +82,17 @@ def render_graph(structures, variables):
         g.node(pairs[1], variables[pairs[1]]['desc'])
         g.edge(pairs[0], pairs[1])
 
+    return g
+
+def render_graph_probabilities(g, variables):
+
     for var, values in variables.items():
         g.attr('node', shape = 'plaintext')
         grids = render_grid(var, values)
 
         table = render_table(var, values, grids)
         g.node('cpd_' + var, label=table, color='gray')
-        g.edge( var, 'cpd_' + var, style='invis')
+        g.edge( 'cpd_' + var, var, style='invis')
 
     return g
 

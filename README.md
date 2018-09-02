@@ -35,17 +35,11 @@ variables = {
         'legend': { 0:'A', 1:'B', 2:'C' },
         'cpd': {
             0: { 'I': { 0: { 'D': { 0: 0.3, 1: 0.05 } },
-                        1: { 'D': { 0: 0.9, 1: 0.5 } }
-                }                
-            },
+                        1: { 'D': { 0: 0.9, 1: 0.5 } } } },
             1: { 'I': { 0: { 'D': { 0: 0.4, 1: 0.25 } },
-                        1: { 'D': { 0: 0.08, 1: 0.3 } }
-                }                
-            },
+                        1: { 'D': { 0: 0.08, 1: 0.3 } } } },
             2: { 'I': { 0: { 'D': { 0: 0.3, 1: 0.7 } },
-                        1: { 'D': { 0: 0.02, 1: 0.2 } }
-                }                
-            },
+                        1: { 'D': { 0: 0.02, 1: 0.2 } } } },
         }
     },
     'L': {
@@ -67,7 +61,7 @@ variables = {
 }
 ```
 
-## Render the Graphical Representation of the Bayse Network
+## Render the Graphical Representation of the Bayes Network
 
 Everything here is done in the background by the graphviz_helper
 
@@ -77,6 +71,7 @@ Everything here is done in the background by the graphviz_helper
 %autoreload 2
 
 from graphviz_helper import render_graph
+from graphviz_helper import render_graph_probabilities
 ```
 
 
@@ -90,6 +85,20 @@ g
 
 
 ![svg](output_5_0.svg)
+
+
+
+
+```python
+g = render_graph_probabilities(g, variables)
+
+g
+```
+
+
+
+
+![svg](output_6_0.svg)
 
 
 
@@ -132,11 +141,11 @@ model.get_cpds()
 
 
 
-    [<TabularCPD representing P(D:2) at 0x111c5d710>,
-     <TabularCPD representing P(I:2) at 0x111c5d6a0>,
-     <TabularCPD representing P(G:3 | I:2, D:2) at 0x111c5d8d0>,
-     <TabularCPD representing P(L:2 | G:3) at 0x1108c8ac8>,
-     <TabularCPD representing P(S:2 | I:2) at 0x11861c710>]
+    [<TabularCPD representing P(D:2) at 0x1095e77f0>,
+     <TabularCPD representing P(I:2) at 0x1095e7630>,
+     <TabularCPD representing P(G:3 | I:2, D:2) at 0x1095e7940>,
+     <TabularCPD representing P(L:2 | G:3) at 0x1081b3a58>,
+     <TabularCPD representing P(S:2 | I:2) at 0x10ff016a0>]
 
 
 
@@ -169,7 +178,7 @@ model.local_independencies(['D', 'I', 'S', 'G', 'L'])
 
     (D _|_ I, S)
     (I _|_ D)
-    (S _|_ D, G, L | I)
+    (S _|_ D, L, G | I)
     (G _|_ S | D, I)
     (L _|_ D, I, S | G)
 
