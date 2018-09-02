@@ -74,11 +74,11 @@ def render_graph(structures, variables):
         print("Graphviz also needs to be installed on the host: brew install graphviz")
 
     g = Digraph('G')
-    # g.attr(compound='true')
+    g.attr(center='true')
 
     # print(structures)
     for pairs in structures:
-        g.attr('node', shape='oval')
+        g.attr('node', shape='oval', color='gray')
         g.node(pairs[0], variables[pairs[0]]['desc'])
         g.node(pairs[1], variables[pairs[1]]['desc'])
         g.edge(pairs[0], pairs[1])
@@ -89,7 +89,7 @@ def render_graph(structures, variables):
 
         table = render_table(var, values, grids)
         g.node('cpd_' + var, label=table, color='gray')
-        g.edge('cpd_' + var,var,  style='invis')
+        g.edge( var, 'cpd_' + var, style='invis')
 
     return g
 
