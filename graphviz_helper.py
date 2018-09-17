@@ -9,7 +9,7 @@ def extract_path(paths, cpd, callback):
 def render_table(variable, values, grids):
 
     span = len(values['cpd']) + 1
-    prefix = '<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR><TD COLSPAN="' + str(span) +'">' + values['desc'] + '</TD></TR>'
+    prefix = '<<FONT POINT-SIZE="7"><TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0"><TR><TD COLSPAN="' + str(span) +'">' + values['desc'] + '</TD></TR>'
     header = "<TR><TD></TD>"
 
     for ll, label in values['legend'].items():
@@ -34,7 +34,7 @@ def render_table(variable, values, grids):
             body = body + '<TD>' + str(grids[0][col+1]) + '</TD>'
         body = body + "</TR>"
 
-    footer = '</TABLE>>'
+    footer = '</TABLE></FONT>>'
     return prefix + header + body + footer
 
 def render_grid(variable, values):
@@ -85,14 +85,19 @@ def render_graph(structures, variables):
     return g
 
 def render_graph_probabilities(g, variables):
+    import random
 
     for var, values in variables.items():
         g.attr('node', shape = 'plaintext')
         grids = render_grid(var, values)
 
         table = render_table(var, values, grids)
+        random.seed(hash(table))
         g.node('cpd_' + var, label=table, color='gray')
-        g.edge( 'cpd_' + var, var, style='invis')
+        if random.randint(0,1):
+            g.edge( 'cpd_' + var, var, style='invis')
+        else:
+            g.edge( var, 'cpd_' + var, style='invis')
 
     return g
 
