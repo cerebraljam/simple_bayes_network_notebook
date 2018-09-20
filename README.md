@@ -151,11 +151,11 @@ model.get_cpds()
 
 
 
-    [<TabularCPD representing P(D:2) at 0x10f183588>,
-     <TabularCPD representing P(I:2) at 0x10f1831d0>,
-     <TabularCPD representing P(G:3 | I:2, D:2) at 0x10f183908>,
-     <TabularCPD representing P(L:2 | G:3) at 0x10dcf4ac8>,
-     <TabularCPD representing P(S:2 | I:2) at 0x115a19e10>]
+    [<TabularCPD representing P(D:2) at 0x10af19898>,
+     <TabularCPD representing P(I:2) at 0x10af19668>,
+     <TabularCPD representing P(G:3 | I:2, D:2) at 0x10af19940>,
+     <TabularCPD representing P(L:2 | G:3) at 0x10bc3cc50>,
+     <TabularCPD representing P(S:2 | I:2) at 0x10bc3ccc0>]
 
 
 
@@ -190,11 +190,11 @@ print(model.get_cpds('G').values.T)
 
 ```
 
-    [[[ 0.3   0.4   0.3 ]
-      [ 0.9   0.08  0.02]]
+    [[[0.3  0.4  0.3 ]
+      [0.9  0.08 0.02]]
     
-     [[ 0.05  0.25  0.7 ]
-      [ 0.5   0.3   0.2 ]]]
+     [[0.05 0.25 0.7 ]
+      [0.5  0.3  0.2 ]]]
 
 
 
@@ -206,10 +206,10 @@ model.local_independencies(['D', 'I', 'S', 'G', 'L'])
 
 
 
-    (D _|_ I, S)
-    (I _|_ D)
-    (S _|_ L, D, G | I)
-    (G _|_ S | I, D)
+    (D _|_ G, S, L, I)
+    (I _|_ G, S, L, D)
+    (S _|_ G, L, D | I)
+    (G _|_ S, L | I, D)
     (L _|_ I, S, D | G)
 
 
@@ -247,6 +247,16 @@ print(infer.query(['G']) ['G'])
     ╘═════╧══════════╛
 
 
+## Ok, now what? What can we do with this graph?
+
+Now that we have a fully parametrised network, we can ask questions.
+
+We observe that the test was not difficult (D:0), and we know that the student is intelligent (I:1)
+
+* Q1. What is the probability that the student gets a A (G_0)?
+* Q2: What is the likelihood that the student gets a letter of recommendation? (L_1)?
+* Q3: What is the likelihood that the student gets a got SAT score?
+
 
 ```python
 query_variable = ['G' ,'L', 'S']
@@ -272,7 +282,7 @@ for q in query_variable:
     ├─────┼──────────┤
     │ G_2 │   0.0200 │
     ╘═════╧══════════╛
-    [ 0.9   0.08  0.02]
+    [0.9  0.08 0.02]
     ╒═════╤══════════╕
     │ L   │   phi(L) │
     ╞═════╪══════════╡
@@ -280,7 +290,7 @@ for q in query_variable:
     ├─────┼──────────┤
     │ L_1 │   0.8582 │
     ╘═════╧══════════╛
-    [ 0.1418  0.8582]
+    [0.1418 0.8582]
     ╒═════╤══════════╕
     │ S   │   phi(S) │
     ╞═════╪══════════╡
@@ -288,17 +298,22 @@ for q in query_variable:
     ├─────┼──────────┤
     │ S_1 │   0.8000 │
     ╘═════╧══════════╛
-    [ 0.2  0.8]
+    [0.2 0.8]
 
 
-Predicting values from new data points
+## Predicting values from new data points
+
+Let's say that we don't care about the probability itself, we just want to know which is the most likely outcome for each variable.
 
 Predicting values from new data points is quite similar to computing the conditional probabilities. We need to query for the variable that we need to predict given all the other features. The only difference is that rather than getting the probabilitiy distribution we are interested in getting the most probable state of the variable.
 
-In pgmpy this is known as MAP query. Here's an example:
+In pgmpy this is known as MAP query. 
+
+Here's an example if we don't have evidence:
 
 
 ```python
+# What is the most probable value for the variables `query_variable`, if we don't provide evidence?
 infer.map_query(query_variable)
 ```
 
@@ -309,9 +324,11 @@ infer.map_query(query_variable)
 
 
 
+Same query, but with evidences:
+
 
 ```python
-
+# What is the most probable value for the variables `query_variable`, given evidences `evidence`?
 infer.map_query(query_variable, evidence=evidence)
 ```
 
