@@ -12,6 +12,7 @@ To make sense of what is below, going through the exercise 1 and 2 of the pgmpy 
 * [1. Introduction to Probabilistic Graphical Models](https://github.com/pgmpy/pgmpy_notebook/blob/master/notebooks/1.%20Introduction%20to%20Probabilistic%20Graphical%20Models.ipynb)
 * [2. Bayesian Networks](https://github.com/pgmpy/pgmpy_notebook/blob/master/notebooks/2.%20Bayesian%20Networks.ipynb)
 
+The Student Network used in this notebook come from the book of Daphne Koller, Nir Friedman. Probabilistic Graphical Models, Principles and Techniques, 2009, page 53
 
 ## Configuring the Bayesian Network
 
